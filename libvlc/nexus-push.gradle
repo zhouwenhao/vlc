@@ -1,0 +1,48 @@
+apply plugin: 'maven'
+
+//task androidJavadocs(type: Javadoc) {
+//    source = android.sourceSets.main.java.srcDirs
+//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+//}
+//
+//task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+//    classifier = 'javadoc'
+//    from androidJavadocs.destinationDir
+//}
+
+tasks.withType(Javadoc) {
+    options.encoding = "UTF-8"
+}
+
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+artifacts {
+    archives androidSourcesJar
+//    archives androidJavadocsJar
+}
+
+uploadArchives{
+    repositories {
+        mavenDeployer {
+            repository(url: "http://172.16.13.133:8081/nexus/content/repositories/publish") {
+                authentication(userName: "admin", password: "admin123")
+            }
+
+            pom.groupId = 'cn.cloudwalk'
+            pom.artifactId = 'CwVLC'
+            pom.version = '0.0.3'
+
+//            pom.project {
+//                licenses {
+//                    license {
+//                        name 'The Apache Software License, Version 2.0'
+//                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                    }
+//                }
+//            }
+        }
+    }
+}
